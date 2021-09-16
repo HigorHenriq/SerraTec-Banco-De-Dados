@@ -127,6 +127,10 @@ WHERE id = 1
 
 select * from funcionario;
 
+-- deleta os pedidos da cliente josefina
+delete from pedido_item pi where pi.id_pedido in(
+ select pe.id from pedido pe where id_cliente = 3)
+  
 -- CONSULTANDO
 SELECT * FROM produto 
 	WHERE data_fab = '2021-09-15'
@@ -216,8 +220,10 @@ insert into pedido_item (id_pedido , id_produto) values
 
 
 ------------------------------------;
-
+-- JOIN
 --
+
+-- CONSULTAR AS QUANTIDADES DE COMPRAS DE CADA CLIENTE
 
 select c.nome as nome_cliente, pr.nome as nome_produto, count(pr.nome) as quantidade 
     from pedido_item pi 
@@ -227,8 +233,7 @@ select c.nome as nome_cliente, pr.nome as nome_produto, count(pr.nome) as quanti
     group by c.nome, pr.nome
     order by c.nome
 
-
---
+-- CONSULTAR AS QUANTIDADES DE COMPRAS DE CADA CLIENTE
 SELECT
 	cliente.nome as nome_cliente,
 	produto.nome as nome_produto,
@@ -242,3 +247,23 @@ FROM pedido_item
 GROUP BY  cliente.nome, produto.nome
 ORDER BY cliente.nome
 
+
+-- CONSULTAR OQUE FOI REGISTRADO POR CADA FUNCIONARIO
+SELECT 
+	funcionario.id,
+    funcionario.nome as nome_funcionario,
+    produto.id,
+    produto.nome as produto_registrado
+    
+FROM funcionario
+	INNER JOIN produto
+ON produto.id = funcionario.id
+
+
+--EXIBE A NOTA FISCAL DE UM DOS PEDIDOS(madalena)
+select pe.id as codigo_pedido, pe.data_pedido as data, c.nome as comprador, count(pr) as qtd_itens, sum(pr.valor) as preco_total from pedido_item pi 
+	join pedido pe on pe.id = pi.id_pedido
+    join produto pr on pr.id = pi.id_produto
+    join cliente c on c.id = pe.id_cliente
+	where pe.id_cliente = 4 and pe.id = 6
+    group by c.nome, pe.id
